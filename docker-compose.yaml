@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-db
+    env_file:
+      - .env-example
+    environment:
+      POSTGRES_HOST: ${DB_HOST}
+      POSTGRES_USER: ${DB_USER}  
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    networks:
+      - hotel_net
+    volumes:
+      - postgres_vol:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  
+  backend:
+     build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: api
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env-example
+    networks:
+      - hotel_net
+    depends_on:
+      postgres:
+        condition: service_healthy 
+
+networks:
+  hotel_net:
+
+volumes:
+  postgres_vol:
