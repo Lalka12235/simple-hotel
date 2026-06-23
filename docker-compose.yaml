@@ -15,6 +15,7 @@ services:
       - hotel_net
     volumes:
       - postgres_vol:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
