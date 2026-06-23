@@ -1,7 +1,9 @@
 package model
-type booking struct {
-	IdMagazineClient int
-	IdClient         int
-	IdNumberRoom     int 
-	CheckInTime      string 
-	CheckOutTime     string
+type Booking struct {
+	IdBooking          int
+	IdClient           int
+	IdRoom             int 
+	IdRoomCategories   int 
+	CheckInTime        string 
+	CheckOutTime       string
+}
