@@ -3,9 +3,8 @@ services:
     image: postgres:latest
     container_name: postgres-db
     env_file:
-      - .env-example
+      - .env
     environment:
-      POSTGRES_HOST: ${DB_HOST}
       POSTGRES_USER: ${DB_USER}  
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
@@ -14,23 +13,23 @@ services:
     networks:
       - hotel_net
     volumes:
-      - postgres_vol:/var/lib/postgresql
+      - postgres_vol:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
   
   backend:
-     build:
-      dockerfile: Dockerfile
+    build:
       context: .
+      dockerfile: Dockerfile
     container_name: api
     ports:
       - "8080:8080"
     env_file:
-      - .env-example
+      - .env
     networks:
       - hotel_net
     depends_on:

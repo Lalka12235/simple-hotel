@@ -2,16 +2,14 @@ FROM golang:1.19
 
 WORKDIR /app
 
-COPY go.mod .
+COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY .env-example .
-
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o /docker-gs-ping
+RUN CGO_ENABLED=0 GOOS=linux go build -o /hotel-app ./internal/main.go
 
 EXPOSE 8080
 
-CMD ["/docker-gs-ping"]
+CMD ["/hotel-app"]
